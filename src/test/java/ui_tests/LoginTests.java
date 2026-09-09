@@ -1,4 +1,127 @@
 package ui_tests;
 
-public class LoginTests {
+import dto.User;
+import manager.AppManager;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+import pages.HomePage;
+import pages.LoginPage;
+import static utils.PropertiesReader.*;
+
+public class LoginTests extends AppManager {
+    LoginPage loginPage;
+    SoftAssert softAssert = new SoftAssert();
+
+
+    @BeforeMethod
+    public void gotoLoginPage() {
+        new HomePage(getDriver()).clickLogInButton();
+        loginPage = new LoginPage(getDriver());
+
+
+    }
+
+    @Test
+    public void loginPositiveTest() {
+        User user = User.builder()
+                .username(getProperty("base.properties",
+                        "email"))
+                .password(getProperty("base.properties",
+                        "password"))
+                .build();
+
+        loginPage.typeLoginForm(user);
+        loginPage.clickbtnYalla();
+        Assert.assertTrue(loginPage.isPopUpSuccessLoginDisplayed());
+    }
+
+    @Test
+    public void loginNegativeWrongEmailTest() {
+        User user = User.builder()
+                .username("atimaksimova1@gmail.com")
+                .password(getProperty("base.properties",
+                        "password"))
+                .build();
+
+        LoginPage loginPage = new LoginPage(getDriver());
+        loginPage.typeLoginForm(user);
+        loginPage.clickbtnYalla();
+        Assert.assertTrue(loginPage.isPopUpFailedLoginDisplayed());
+    }
+
+    @Test
+    public void loginNegativeWrongPasswordTest() {
+        User user = User.builder()
+                .username(getProperty("base.properties",
+                        "email"))
+                .password("SSas124!")
+                .build();
+
+        LoginPage loginPage = new LoginPage(getDriver());
+        loginPage.typeLoginForm(user);
+        loginPage.clickbtnYalla();
+        Assert.assertTrue(loginPage.isPopUpFailedLoginDisplayed());
+    }
+
+    @Test
+    public void loginNegativeEmptyAllFieldsWOClickInFieldsTest() {
+        loginPage.clickbtnYalla();
+        Assert.assertFalse(loginPage.isBtnYallaEnabled());
+
+    }
+
+    @Test
+    public void loginNegativeEmptyAllFieldsWithClickTest() {
+        User user = User.builder()
+                .username("")
+                .password("")
+                .build();
+
+        loginPage.typeLoginForm(user);
+        loginPage.clickbtnYalla();
+        softAssert.assertFalse(loginPage.isBtnYallaEnabled(), "validate isBtnYallaEnabled()");
+        System.out.println("test working");
+        softAssert.assertTrue(loginPage.isTextImErrorPresent("Email is required"), "validate message: Email is required");
+        softAssert.assertTrue(loginPage.isTextImErrorPresent("Password is required"), "validate message: Password is required");
+        softAssert.assertAll();
+
+    }
+
+    @Test
+    public void loginNegativeEmptyFieldPasswordTest() {
+        User user = User.builder()
+                .username(getProperty("base.properties",
+                        "email"))
+                .password("")
+                .build();
+
+        loginPage.typeLoginForm(user);
+        loginPage.clickbtnYalla();
+        softAssert.assertFalse(loginPage.isBtnYallaEnabled(), "validate isBtnYallaEnabled()");
+        softAssert.assertTrue(loginPage.isTextImErrorPresent("Password is required"),
+                "validate message: Password is required");
+        softAssert.assertAll();
+
+    }
+
+    @Test
+    public void loginNegativeEmptyFieldEmailTest() {
+        User user = User.builder()
+                .username("")
+                .password(getProperty("base.properties",
+                        "password"))
+                .build();
+
+        loginPage.typeLoginForm(user);
+        loginPage.clickbtnYalla();
+        softAssert.assertFalse(loginPage.isBtnYallaEnabled(), "validate isBtnYallaEnabled()");
+        softAssert.assertTrue(loginPage.isTextImErrorPresent("Email is required"),
+                "validate message: Email is required");
+        softAssert.assertAll();
+
+
+    }
+
 }
