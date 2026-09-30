@@ -3,6 +3,7 @@ package pages;
 import dto.User;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
@@ -25,6 +26,8 @@ public class RegistrationPage extends BasePage {
     WebElement checkBoxIAgree;
     @FindBy(css = "button.btn--primary")
     WebElement btnYalla;
+    @FindBy(xpath = "//label[@for='terms-of-use']")
+    WebElement checkBoxLabel;
 
 
 
@@ -41,6 +44,14 @@ public class RegistrationPage extends BasePage {
 
     public void clickbtnYalla(){
         btnYalla.click();
+    }
+
+    public void clickCheckBoxWithAction(){
+        int x = checkBoxLabel.getSize().getWidth();
+        int y = checkBoxLabel.getSize().getHeight();
+        System.out.println(x + "X" + y);
+        Actions actions = new Actions(driver);
+        actions.moveToElement(checkBoxLabel,x/10,y/4 ).click().perform();
     }
 
 

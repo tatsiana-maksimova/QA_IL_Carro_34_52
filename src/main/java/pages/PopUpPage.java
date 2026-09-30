@@ -14,9 +14,14 @@ public class PopUpPage extends BasePage {
 
     @FindBy(xpath = "//div[@class='modal-content']//p[contains(text(), 'logged in')]")
     WebElement poUpMessage;
+    @FindBy(xpath = "//a[text()='OK']")
+    WebElement btnOK;
 
     public boolean isTextInPopUpMessagePresent(String text) {
         return isTextInElementPresent(poUpMessage, text);
+    }
+    public void clickBtnOk() {
+       clickWait(btnOK);
     }
 
 }
